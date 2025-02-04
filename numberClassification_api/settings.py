@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['temitopejosephstageonehng.up.railway.app', 'www.temitopejosephstageonehng.up.railway.app']
+ALLOWED_HOSTS = ['temitopejosephstageonehng.up.railway.app', 'www.temitopejosephstageonehng.up.railway.app', '127.0.0.1', 'localhost']
 
 
 # Application definition
