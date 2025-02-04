@@ -12,11 +12,9 @@ This API classifies numbers and provides interesting mathematical properties alo
     - [Request](#request)
     - [Response](#response)
 - [Error Handling](#error-handling)
-- [Code Quality](#code-quality)
 - [Deployment](#deployment)
 - [Technologies Used](#technologies-used)
 - [Local Development](#local-development)
-- [Testing](#testing)
 - [Examples](#examples)
 
 ## Introduction
