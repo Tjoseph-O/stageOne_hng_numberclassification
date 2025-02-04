@@ -92,13 +92,10 @@ def classify_number(request):
     if is_armstrong_num:
         properties.append("armstrong")
 
-    if is_prime_num and number > 1:
-        properties.append("prime")
-
-    if number % 2 != 0:
+    if number % 2 != 0:  # Odd check FIRST
         properties.append("odd")
 
-    if number % 2 == 0:
+    if number % 2 == 0:  # Even check
         properties.append("even")
 
     success_response = OrderedDict()
