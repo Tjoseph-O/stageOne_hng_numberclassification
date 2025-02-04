@@ -88,8 +88,12 @@ def classify_number(request):
     is_odd = number % 2 != 0
 
     properties = []
+
     if is_armstrong_num:
         properties.append("armstrong")
+
+    if is_prime_num and number > 1:
+        properties.append("prime")
 
     if number % 2 != 0:
         properties.append("odd")
