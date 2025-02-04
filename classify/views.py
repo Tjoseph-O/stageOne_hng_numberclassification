@@ -37,12 +37,14 @@ def is_perfect(n: int) -> bool:
                 divisors_sum += n // i
     return divisors_sum == n
 
+
+
 def is_armstrong(n: int) -> bool:
     if n == 0:
-        return True
+        return True  
 
     original_n = n
-    n = abs(n)
+    n = abs(n)  
     num_digits = len(str(n))
     armstrong_sum = 0
     temp_n = n
@@ -51,6 +53,9 @@ def is_armstrong(n: int) -> bool:
         digit = temp_n % 10
         armstrong_sum += digit ** num_digits
         temp_n //= 10
+    
+    if original_n < 0 and armstrong_sum == abs(original_n):
+        return True
 
     return armstrong_sum == original_n
 
