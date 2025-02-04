@@ -1,3 +1,5 @@
 
 
-web: gunicorn numberClassification_api.wsgi:application
+web: gunicorn numberClassification_api.wsgi.application
+
+
