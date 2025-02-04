@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from collections import OrderedDict
+import requests_cache
 
 NUMBER_KEY = "number"
 IS_PRIME_KEY = "is_prime"
@@ -13,6 +14,8 @@ DIGIT_SUM_KEY = "digit_sum"
 FUN_FACT_KEY = "fun_fact"
 
 NUMBERS_API_BASE_URL = os.environ.get("NUMBERS_API_BASE_URL", "http://numbersapi.com")
+
+session = requests_cache.CachedSession('numbers_api_cache')
 
 def is_prime(n: int) -> bool:
     if n <= 1:
@@ -30,14 +33,11 @@ def is_perfect(n: int) -> bool:
     for i in range(2, int(n**0.5) + 1):
         if n % i == 0:
             divisors_sum += i
-            if i * i != n:  # Avoid duplicates for perfect squares
+            if i * i != n:
                 divisors_sum += n // i
     return divisors_sum == n
 
 def is_armstrong(n: int) -> bool:
-    if n < 0:
-        return False
-
     if n == 0:
         return True
 
@@ -54,36 +54,20 @@ def is_armstrong(n: int) -> bool:
 
     return armstrong_sum == original_n
 
+
 def digit_sum(n: int) -> int:
     return sum(int(d) for d in str(abs(n)))
-
 
 def get_fun_fact(n: int) -> str:
     try:
         url = f"{NUMBERS_API_BASE_URL}/{n}/math"
-        response = requests.get(url, timeout=5)  # Add timeout
+        response = session.get(url, timeout=5)
         response.raise_for_status()
         return response.text.strip()
 
-    except requests.exceptions.HTTPError as http_err:
-        print(f"HTTP Error calling Numbers API: {http_err}")
-        return f"HTTP Error: {http_err}"
-
-    except requests.exceptions.ConnectionError as conn_err:
-        print(f"Connection Error calling Numbers API: {conn_err}")
-        return f"Connection Error: {conn_err}"
-
-    except requests.exceptions.Timeout as timeout_err:
-        print(f"Timeout Error calling Numbers API: {timeout_err}")
-        return "Timeout Error: Request timed out"
-
     except requests.exceptions.RequestException as e:
-        print(f"Request Error calling Numbers API: {e}")
-        return f"Request Error: {e}"
-
-    except Exception as e:
-        print(f"Unexpected error getting fun fact: {e}")
-        return f"Unexpected Error: {e}"
+        print(f"Error calling Numbers API: {e}")
+        return f"Error: {e}"
 
 
 @api_view(['GET'])
@@ -104,17 +88,16 @@ def classify_number(request):
     is_odd = number % 2 != 0
 
     properties = []
-    if is_armstrong_num:  # Check for Armstrong FIRST
+    if is_armstrong_num:
         properties.append("armstrong")
 
-    if number % 2 != 0:  # Check if odd
+    if number % 2 != 0:
         properties.append("odd")
 
-    if number % 2 == 0:  # Check if even (separately)
+    if number % 2 == 0:
         properties.append("even")
 
     success_response = OrderedDict()
-    # success_response["error"] = False
     success_response[NUMBER_KEY] = number
     success_response[IS_PRIME_KEY] = is_prime_num
     success_response[IS_PERFECT_KEY] = is_perfect_num
